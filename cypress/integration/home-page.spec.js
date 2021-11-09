@@ -62,7 +62,15 @@ describe("Home Page ", () => {
        cy.get(".MuiCardHeader-content").each(($card, index) => {
          cy.wrap($card).find("p").contains(matchingMovies[index].title);
        });
-     });
+     })
+     it("should display no movies if a match for the search string cannot be found. e.g 'xyz' ", () => {
+         let searchString = "xyz";
+         let matchingMovies = filterByTitle(movies, searchString);
+         cy.get(".MuiCardHeader-content").should(
+            "have.length",
+            0
+        );
+     })
    })
    describe("By movie genre" ,() => {
      // More later
