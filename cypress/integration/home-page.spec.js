@@ -88,5 +88,22 @@ describe("Home Page ", () => {
        });
      });
    });
+
+   describe("Selecting a favorite movie", () => {
+       it("Display favorited avatar at top of card and add to favorites page.", () => {
+        cy.get("button[aria-label='add to favorites']").eq(1).click();
+        cy.get(".MuiCardHeader-avatar").should("have.length", 1);
+
+        cy.get("header").find(".MuiToolbar-root").find("button").eq(1).click();
+        cy.url().should("include", `/favorites`);
+        cy.get("h3").contains("Favorite Movies");
+        cy.get(".MuiCardHeader-content").should(
+            "have.length",
+            1
+          );
+
+       }); 
+   });
  });
 });
+//MuiCardHeader-avatar 
