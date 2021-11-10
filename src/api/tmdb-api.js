@@ -61,8 +61,8 @@ export const getMovie = (args) => {
       if (!response.ok) {
         throw new Error(response.json().message);
       }
+      //console.log(response.json());
       return response.json();
-  
     })
     .catch((error) => {
       throw error
