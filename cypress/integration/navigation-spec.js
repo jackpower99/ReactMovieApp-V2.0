@@ -83,4 +83,22 @@ describe("From the Favorites page", () => {
       cy.get("h3").contains(movies[0].title);
     });
   });
+
+  describe("The forward/backward links", () => {
+    beforeEach(() => {
+      cy.get("button[aria-label='add to favorites']").eq(0).click();
+      //cy.get("button[aria-label='add to favorites']").eq(1).click();
+      cy.get("header").find(".MuiToolbar-root").find("button").eq(1).click();
+      cy.url().should("include", `/favorites`);
+      //cy.visit("/movies/favorites")
+      cy.get(".MuiCardActions-root").eq(0).contains("More Info").click();
+    });
+    it("should navigate backward and forward between the favorites page and the movie details page.", () => {
+        //cy.get(".MuiCardActions-root").eq(0).contains("More Info").click();
+      cy.get("button[aria-label='go back'").click();
+      cy.get("h3").contains("Favorite Movies");
+      cy.get("button[aria-label='go forward'").click();
+      cy.get("h3").contains(movies[0].title);
+    });
+  });
 });
