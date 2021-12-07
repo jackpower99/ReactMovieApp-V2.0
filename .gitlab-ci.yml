@@ -7,8 +7,6 @@ stages:
   - build
   - test
 
-
-
 # Jobs 
 
 install_dependencies:
@@ -20,15 +18,6 @@ install_dependencies:
       - node_modules/
 
 bundle_app:
-stage: build
-script:
-  - npm run build
-artifacts:
-  paths:
-    - build/
-
-e2etest:    
-  stage: test
+  stage: build
   script:
-    - echo "Run tests in headless mode"
-    - npm run start:ci
+    - npm run build
