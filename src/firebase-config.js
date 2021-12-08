@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
-import {getAuth} from 'firebase/auth';
+import { getAuth } from "firebase/auth";
+
 
 //Todo fix with environment varaibles
 

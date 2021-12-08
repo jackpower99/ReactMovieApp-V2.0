@@ -4,64 +4,104 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
+// import FormControlLabel from '@mui/material/FormControlLabel';
+// import Checkbox from '@mui/material/Checkbox';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+//import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 //import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {createUserWithEmailAndPassword} from  "firebase/auth";
+import { onAuthStateChanged} from  "firebase/auth";
 import {auth} from "../../firebase-config";
-
-
+import {useAuth} from "../../contexts/authContext"
+import {Link, useHistory} from "react-router-dom";
 
 const theme = createTheme();
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
 
 export default function SignInForm() {
 
 const [email, setEmail] = React.useState("");
-const [confirmEmail, setConfirmEmail] = React.useState("");
+const [confirmPassword, setConfirmPassword] = React.useState("");
 const [password, setPassword] = React.useState("");
 
 const [loginEmail, setLoginEmail] = React.useState("");
 const [loginPassword, setLoginPassword] = React.useState("");
 
-//   const handleSubmit = (event) => {
-//     event.preventDefault();
-//     register();
-//     //const data = new FormData(event.currentTarget);
-//     // eslint-disable-next-line no-console
+const [user, setUser] = React.useState({});
 
-//     //do something here with form data, if user exists login if doesnt then register by calling functions adn passing in form data.
-   
-//     // console.log({
-//     //   email: data.get('email'),
-//     //   password: data.get('password'),
-//     // });
+// const [open, setOpen] = React.useState(false);
+
+const {register, login} = useAuth();
+
+const history = useHistory()
+
+onAuthStateChanged(auth, (currentUser) => {
+    setUser(currentUser);
+})
+
+//   const handleClose = (event, reason) => {
+//     if (reason === 'clickaway') {
+//       return;
+//     }
+
+//     setOpen(false);
 //   };
 
-  const register = async () =>{
-      if(email === confirmEmail){
-      try{
-     const user =  await createUserWithEmailAndPassword(
-         auth,
-         email,
-         password
-     );
-     console.log(user);
-      } catch (error){
-          console.log(error.message);
-      }
-    } else{
-        console.log("Confirm != email")
+
+const registerUser = async () =>{
+    if(password === confirmPassword && email.length>6){
+        console.log("Registering");
+        register(email,password)
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err.message));
+
+        // <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        // <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+        // You've been Registered Successfully!
+        // </Alert>
+        // </Snackbar>
+    }
+    else {
+        console.log("Unable to Register");
+        // <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        // <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+        // Invalid Details
+        // </Alert>
+        // </Snackbar>
     }
 };
 
-  const login = async () =>{
+const loginUser = async () =>{
+    if(loginPassword && loginEmail.length>0){
+        console.log("Signing In");
+        login(loginEmail,loginPassword)
+        .then(res => {
+            console.log(res)
+            history.push("/")
+    })
+        .catch((err) => console.log(err.message));
 
+        // <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        // <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+        // You've been Registered Successfully!
+        // </Alert>
+        // </Snackbar>
+    }
+    else {
+        console.log("Unable to Register");
+        // <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        // <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+        // Invalid Details
+        // </Alert>
+        // </Snackbar>
+    }
   };
 
   return (
@@ -98,15 +138,16 @@ const [loginPassword, setLoginPassword] = React.useState("");
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
-            <Box component="form" sx={{ mt: 1 }}>
+            <Box component="form" sx={{ mt: 1}}
+            >
               <TextField
                 margin="normal"
                 required
                 fullWidth
-                id="email"
+                id="signInEmail"
                 label="Email Address"
                 name="email"
-                autoComplete="email"
+                //autoComplete="email"
                 autoFocus
                 onChange={(event) => {setLoginEmail(event.target.value)}}
               />
@@ -117,16 +158,13 @@ const [loginPassword, setLoginPassword] = React.useState("");
                 name="password"
                 label="Password"
                 type="password"
-                id="password"
-                autoComplete="current-password"
+                id="signInPassword"
+                //autoComplete="current-password"
                 onChange={(event) => {setLoginPassword(event.target.value)}}
               />
-              {/* <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              /> */}
               <Button
-                type="submit"
+                onClick={loginUser}
+                //type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
@@ -178,17 +216,6 @@ const [loginPassword, setLoginPassword] = React.useState("");
                 margin="normal"
                 required
                 fullWidth
-                id="email"
-                label="Confirm Email Address"
-                name="confirm email"
-                autoComplete="confirm email"
-                autoFocus
-                onChange={(event) => {setConfirmEmail(event.target.value)}}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
                 name="password"
                 label="Password"
                 type="password"
@@ -196,13 +223,24 @@ const [loginPassword, setLoginPassword] = React.useState("");
                 autoComplete="current-password"
                 onChange={(event) => {setPassword(event.target.value)}}
               />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="confirmPassword"
+                label="Confirm Password"
+                type="password"
+                id="confirmPassword"
+                autoComplete="current-password"
+                onChange={(event) => {setConfirmPassword(event.target.value)}}
+              />
               {/* <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               /> */}
               <Button
-                onClick={register}
-                type="submit"
+                onClick={registerUser}
+                //type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}

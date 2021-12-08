@@ -12,6 +12,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import MoviesContextProvider from "./contexts/moviesContext";
 import AddMovieReviewPage from './pages/addMovieReviewPage';
 import SignInPage from "./pages/signInPage";
+import AuthContextProvider from "./contexts/authContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,6 +26,7 @@ const queryClient = new QueryClient({
 
 const App = () => {
   return (
+    <AuthContextProvider>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
           <SiteHeader />      {/* New Header  */}
@@ -42,8 +44,9 @@ const App = () => {
       </Switch>
       </MoviesContextProvider>
     </BrowserRouter>
-          <ReactQueryDevtools initialIsOpen={false} />
-          </QueryClientProvider>
+  <ReactQueryDevtools initialIsOpen={false} />
+  </QueryClientProvider>
+  </AuthContextProvider>
   );
 };
 
