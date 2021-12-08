@@ -36,9 +36,6 @@ bundle_app:
   stage: build
   script:
     - npm run build
-  artifacts:
-    paths:
-      - build/
 
 e2etest:    
   stage: test
