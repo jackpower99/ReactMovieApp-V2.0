@@ -1,4 +1,4 @@
-let movieId = 335983; // The movie Venom
+let movieId = 580489; // The movie Venom
 let movie;
 let numberOfImages;
 let reviews;
@@ -28,6 +28,7 @@ describe("Movie Details Page", () => {
   });
   beforeEach(() => {
     cy.visit(`/movies/${movie.id}`);
+    cy.wait(1000);
   });
   describe("Base tests", () => {
     it("should display movie title in the page header", () => {

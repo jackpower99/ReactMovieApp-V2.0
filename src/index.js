@@ -26,19 +26,19 @@ const queryClient = new QueryClient({
   },
 });
 
-const DefaultRoutes=()=>(
-  <div>
-    <SiteHeader />     {/* New Header  */}
-          <Route exact path="/reviews/form" component={AddMovieReviewPage} />
-          <Route exact path="/movies/upcoming" component={UpcomingMoviesPage} />
-         <Route path="/reviews/:id" component={MovieReviewPage} />
-        <Route exact path="/movies/favorites" component={FavoriteMoviesPage} />
-        <Route path="/movies/:id" component={MoviePage} />
-        <Route exact path="/" component={HomePage} />
-        <Route exact path="/logout" component={HomePage} />
-        <Redirect from="*" to="/" />
-  </div>
-)
+// const DefaultRoutes=()=>(
+//   <div>
+//     <SiteHeader />     {/* New Header  */}
+//           <Route exact path="/reviews/form" component={AddMovieReviewPage} />
+//           <Route exact path="/movies/upcoming" component={UpcomingMoviesPage} />
+//          <Route path="/reviews/:id" component={MovieReviewPage} />
+//         <Route exact path="/movies/favorites" component={FavoriteMoviesPage} />
+//         <Route path="/movies/:id" component={MoviePage} />
+//         <Route exact path="/" component={HomePage} />
+//         <Route exact path="/logout" component={HomePage} />
+//         <Redirect from="*" to="/" />
+//   </div>
+// )
 
 const App = () => {
   const {currentUser} = useAuth();
@@ -49,9 +49,16 @@ const App = () => {
       <BrowserRouter>
           <MoviesContextProvider>
             {" "}
+            <SiteHeader />
           <Switch>
-          <Route exact path="/login" component={SignInPage} />
-          <Route component={DefaultRoutes}/>
+          <Route exact path="/reviews/form" component={AddMovieReviewPage} />
+          <Route exact path="/movies/upcoming" component={UpcomingMoviesPage} />
+         <Route path="/reviews/:id" component={MovieReviewPage} />
+        <Route exact path="/movies/favorites" component={FavoriteMoviesPage} />
+        <Route path="/movies/:id" component={MoviePage} />
+        <Route exact path="/" component={HomePage} />
+        <Route exact path="/logout" component={HomePage} />
+        <Route exact path="/login" component={SignInPage} />
         <Redirect from="*" to="/" />
       </Switch>
       </MoviesContextProvider>
