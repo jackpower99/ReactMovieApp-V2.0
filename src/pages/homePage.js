@@ -4,9 +4,13 @@ import { useQuery } from 'react-query'
 import Spinner from '../components/spinner'
 import {getMovies} from '../api/tmdb-api'
 import AddToFavoritesIcon from '../components/cardIcons/addToFavorites';
+import {useAuth} from "../contexts/authContext";
+import Typography from "@material-ui/core/Typography";
+
 
 const HomePage = (props) => {
-  const {  data, error, isLoading, isError }  = useQuery('discover', getMovies)
+  const {  data, error, isLoading, isError }  = useQuery('discover', getMovies);
+  const {currentUser} = useAuth()
 
   if (isLoading) {
     return <Spinner />
@@ -23,6 +27,10 @@ const HomePage = (props) => {
   //const addToFavorites = (movieId) => true 
 
   return (
+    <div>
+     {currentUser && <Typography variant="h6">
+            Welcome {JSON.stringify(currentUser.email,null,2)}
+    </Typography>}
     <PageTemplate
         title="Discover Movies"
         movies={movies}
@@ -30,6 +38,7 @@ const HomePage = (props) => {
           return <AddToFavoritesIcon movie={movie} />
         }}
       />
+      </div>
   );
 };
 

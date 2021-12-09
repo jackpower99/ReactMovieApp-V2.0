@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -12,6 +12,7 @@ import Menu from "@material-ui/core/Menu";
 import { withRouter } from "react-router-dom";
 import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useAuth } from "../../contexts/authContext";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -20,21 +21,39 @@ const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.toolbar,
 }));
 
+
 const SiteHeader = ( { history }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const {logout} = useAuth();
+  const {currentUser} = useAuth()
 
-  const menuOptions = [
+ 
+  var menuOptions = [
     { label: "Home", path: "/" },
     { label: "Favorites", path: "/movies/favorites" },
     { label: "Upcoming Movies", path: "/movies/upcoming" },
-    { label: "Option 4", path: "/" },
+    { label: "Logout", path: "/logout" },
+    { label: "Login", path: "/login"},
   ];
 
+  function editMenuOptions(){
+    if(currentUser){
+    var menuOpt = menuOptions.filter(opt=> opt.label !== "Login")
+    console.log(menuOpt);
+    return menuOpt;
+    }
+    var menuOptLoggedOut = menuOptions.filter(opt=> opt.label !== "Logout")
+    return menuOptLoggedOut
+  }
+
   const handleMenuSelect = (pageURL) => {
+    if(pageURL === "/logout" ){
+      logout()
+    }
     history.push(pageURL);
   };
 
@@ -78,7 +97,7 @@ const SiteHeader = ( { history }) => {
                   open={open}
                   onClose={() => setAnchorEl(null)}
                 >
-                  {menuOptions.map((opt) => (
+                  {editMenuOptions().map((opt) => (
                     <MenuItem
                       key={opt.label}
                       onClick={() => handleMenuSelect(opt.path)}
@@ -90,7 +109,7 @@ const SiteHeader = ( { history }) => {
               </>
             ) : (
               <>
-                {menuOptions.map((opt) => (
+                {editMenuOptions().map((opt) => (
                   <Button
                     key={opt.label}
                     color="inherit"

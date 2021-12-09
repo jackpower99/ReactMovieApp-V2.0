@@ -9,15 +9,13 @@ import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-//import Snackbar from '@mui/material/Snackbar';
+import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 //import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { onAuthStateChanged} from  "firebase/auth";
-import {auth} from "../../firebase-config";
 import {useAuth} from "../../contexts/authContext"
-import {Link, useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 
 const theme = createTheme();
 
@@ -34,26 +32,22 @@ const [password, setPassword] = React.useState("");
 const [loginEmail, setLoginEmail] = React.useState("");
 const [loginPassword, setLoginPassword] = React.useState("");
 
-const [user, setUser] = React.useState({});
+const [success, setSuccess] = React.useState(false);
+const [fail, setFail] = React.useState(false);
 
-// const [open, setOpen] = React.useState(false);
 
 const {register, login} = useAuth();
 
 const history = useHistory()
 
-onAuthStateChanged(auth, (currentUser) => {
-    setUser(currentUser);
-})
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
 
-//   const handleClose = (event, reason) => {
-//     if (reason === 'clickaway') {
-//       return;
-//     }
-
-//     setOpen(false);
-//   };
-
+    setSuccess(false);
+    setFail(false);
+  };
 
 const registerUser = async () =>{
     if(password === confirmPassword && email.length>6){
@@ -61,20 +55,13 @@ const registerUser = async () =>{
         register(email,password)
         .then((res) => console.log(res))
         .catch((err) => console.log(err.message));
+        setSuccess(true);
+        //handleClick();
 
-        // <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        // <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-        // You've been Registered Successfully!
-        // </Alert>
-        // </Snackbar>
     }
     else {
+        setFail(true);
         console.log("Unable to Register");
-        // <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        // <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-        // Invalid Details
-        // </Alert>
-        // </Snackbar>
     }
 };
 
@@ -87,20 +74,9 @@ const loginUser = async () =>{
             history.push("/")
     })
         .catch((err) => console.log(err.message));
-
-        // <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        // <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-        // You've been Registered Successfully!
-        // </Alert>
-        // </Snackbar>
     }
     else {
         console.log("Unable to Register");
-        // <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        // <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-        // Invalid Details
-        // </Alert>
-        // </Snackbar>
     }
   };
 
@@ -262,6 +238,16 @@ const loginUser = async () =>{
             
             </Box>
             </Box>
+            <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          This is a success message!
+        </Alert>
+        </Snackbar>
+        <Snackbar open={fail} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          This is a error message!
+        </Alert>
+        </Snackbar>
         </Grid>
         </Grid>
     </ThemeProvider>

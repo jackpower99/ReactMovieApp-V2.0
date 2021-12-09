@@ -14,6 +14,8 @@ import AddMovieReviewPage from './pages/addMovieReviewPage';
 import SignInPage from "./pages/signInPage";
 import AuthContextProvider from "./contexts/authContext";
 
+import {useAuth} from "./contexts/authContext";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -24,22 +26,31 @@ const queryClient = new QueryClient({
   },
 });
 
-const App = () => {
-  return (
-    <AuthContextProvider>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-          <SiteHeader />      {/* New Header  */}
-          <MoviesContextProvider>
-            {" "}
-          <Switch>
-          <Route exact path="/login" component={SignInPage} />
+const DefaultRoutes=()=>(
+  <div>
+    <SiteHeader />     {/* New Header  */}
           <Route exact path="/reviews/form" component={AddMovieReviewPage} />
           <Route exact path="/movies/upcoming" component={UpcomingMoviesPage} />
          <Route path="/reviews/:id" component={MovieReviewPage} />
         <Route exact path="/movies/favorites" component={FavoriteMoviesPage} />
         <Route path="/movies/:id" component={MoviePage} />
         <Route exact path="/" component={HomePage} />
+        <Redirect from="*" to="/" />
+  </div>
+)
+
+const App = () => {
+  const {currentUser} = useAuth();
+  console.log(currentUser);
+  return (
+    <AuthContextProvider>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+          <MoviesContextProvider>
+            {" "}
+          <Switch>
+          <Route exact path="/login" component={SignInPage} />
+          <Route component={DefaultRoutes}/>
         <Redirect from="*" to="/" />
       </Switch>
       </MoviesContextProvider>
