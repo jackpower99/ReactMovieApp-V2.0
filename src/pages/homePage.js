@@ -28,8 +28,8 @@ const HomePage = (props) => {
 
   return (
     <div>
-     {currentUser && <Typography variant="h6">
-            Welcome {JSON.stringify(currentUser.email,null,2)}
+     {currentUser && <Typography variant="h5">
+            Welcome {JSON.stringify(currentUser.email,null,2).toString().slice(1,-1)}
     </Typography>}
     <PageTemplate
         title="Discover Movies"

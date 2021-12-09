@@ -50,12 +50,14 @@ const history = useHistory()
   };
 
 const registerUser = async () =>{
-    if(password === confirmPassword && email.length>6){
+    if(password.length>6 && password === confirmPassword && email.includes("@")){
         console.log("Registering");
         register(email,password)
         .then((res) => console.log(res))
         .catch((err) => console.log(err.message));
         setSuccess(true);
+        history.go(0)
+        
         //handleClick();
 
     }
@@ -76,6 +78,7 @@ const loginUser = async () =>{
         .catch((err) => console.log(err.message));
     }
     else {
+        setFail(true);
         console.log("Unable to Register");
     }
   };
@@ -139,6 +142,7 @@ const loginUser = async () =>{
                 onChange={(event) => {setLoginPassword(event.target.value)}}
               />
               <Button
+                id="loginButton"
                 onClick={loginUser}
                 //type="submit"
                 fullWidth
@@ -215,6 +219,7 @@ const loginUser = async () =>{
                 label="Remember me"
               /> */}
               <Button
+                id="registerButton"
                 onClick={registerUser}
                 //type="submit"
                 fullWidth
@@ -240,12 +245,12 @@ const loginUser = async () =>{
             </Box>
             <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-          This is a success message!
+          Congradulations! You've been Registered!
         </Alert>
         </Snackbar>
         <Snackbar open={fail} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-          This is a error message!
+          Oops! Something went wrong! Check your details and try again..
         </Alert>
         </Snackbar>
         </Grid>

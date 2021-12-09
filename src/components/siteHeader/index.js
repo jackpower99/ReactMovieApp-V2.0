@@ -52,6 +52,7 @@ const SiteHeader = ( { history }) => {
 
   const handleMenuSelect = (pageURL) => {
     if(pageURL === "/logout" ){
+      //history.push("/")
       logout()
     }
     history.push(pageURL);

@@ -35,6 +35,7 @@ const DefaultRoutes=()=>(
         <Route exact path="/movies/favorites" component={FavoriteMoviesPage} />
         <Route path="/movies/:id" component={MoviePage} />
         <Route exact path="/" component={HomePage} />
+        <Route exact path="/logout" component={HomePage} />
         <Redirect from="*" to="/" />
   </div>
 )
