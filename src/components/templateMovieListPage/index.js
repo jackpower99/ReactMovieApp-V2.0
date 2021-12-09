@@ -4,7 +4,6 @@ import FilterCard from "../filterMoviesCard";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import MovieList from "../movieList";
-import {useAuth} from "../../contexts/authContext"
 
 const useStyles = makeStyles({
   root: {
@@ -18,7 +17,6 @@ function MovieListPageTemplate({ movies, title, action }) {
   const [genreFilter, setGenreFilter] = useState("0");
   const genreId = Number(genreFilter);
 
-  const currentUser = useAuth();
 
   let displayedMovies = movies
     .filter((m) => {

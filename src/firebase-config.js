@@ -12,6 +12,7 @@ const firebaseConfig = {
     storageBucket: "reactmovieapp-21f80.appspot.com",
     messagingSenderId: "836568668867",
     appId: "1:836568668867:web:ee1f2ce7e589f59fa3a076",
+    // eslint-disable-next-line no-template-curly-in-string
     measurementId: "${config.measurementId}"
   };
 

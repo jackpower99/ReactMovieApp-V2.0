@@ -5,7 +5,6 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   onAuthStateChanged,
-  signInWithPopup,
   signOut,
   confirmPasswordReset,
 } from 'firebase/auth'
