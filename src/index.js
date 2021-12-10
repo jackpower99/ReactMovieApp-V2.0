@@ -13,6 +13,15 @@ import MoviesContextProvider from "./contexts/moviesContext";
 import AddMovieReviewPage from './pages/addMovieReviewPage';
 import SignInPage from "./pages/signInPage";
 import AuthContextProvider from "./contexts/authContext";
+import { auth } from './firebase-config'
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  onAuthStateChanged,
+  signOut,
+  confirmPasswordReset,
+} from 'firebase/auth'
 
 import {useAuth} from "./contexts/authContext";
 
@@ -41,15 +50,27 @@ const queryClient = new QueryClient({
 // )
 
 const App = () => {
-  const {currentUser} = useAuth();
-  console.log(currentUser);
+  // const {currentUser} = useAuth();
+  // console.log(currentUser);
+
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  onAuthStateChanged(auth, user => {
+    setIsLoggedIn(!!user);
+  });
+
+  console.log(isLoggedIn);
+
+  // console.log(window.location.pathname)
+
+  // const currentPage = window.location.pathname;
+
   return (
     <AuthContextProvider>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
           <MoviesContextProvider>
             {" "}
-            <SiteHeader />
+           {isLoggedIn && <SiteHeader />}
           <Switch>
           <Route exact path="/reviews/form" component={AddMovieReviewPage} />
           <Route exact path="/movies/upcoming" component={UpcomingMoviesPage} />

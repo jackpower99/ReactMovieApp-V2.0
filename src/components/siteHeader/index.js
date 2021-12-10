@@ -36,7 +36,7 @@ const SiteHeader = ( { history }) => {
     { label: "Home", path: "/" },
     { label: "Favorites", path: "/movies/favorites" },
     { label: "Upcoming Movies", path: "/movies/upcoming" },
-    { label: "Logout", path: "/logout" },
+    { label: "Logout", path: "/logedOut" },
     { label: "Login", path: "/login"},
   ];
 
@@ -51,11 +51,12 @@ const SiteHeader = ( { history }) => {
   }
 
   const handleMenuSelect = (pageURL) => {
-    if(pageURL === "/logout" ){
-      //history.push("/")
-      logout()
+    if(pageURL !== "/logedout"){
+      history.push(pageURL);
     }
-    history.push(pageURL);
+    
+    history.push("/login");
+    logout();
   };
 
   const handleMenu = (event) => {
