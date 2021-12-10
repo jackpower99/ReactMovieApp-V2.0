@@ -51,12 +51,16 @@ const SiteHeader = ( { history }) => {
   }
 
   const handleMenuSelect = (pageURL) => {
-    if(pageURL !== "/logedout"){
+    console.log(pageURL);
+    if(pageURL !== "/logedOut"){
       history.push(pageURL);
+      console.log(1);
     }
-    
+    else{
+    console.log(pageURL);
     history.push("/login");
     logout();
+    }
   };
 
   const handleMenu = (event) => {

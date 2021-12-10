@@ -50,7 +50,24 @@ export const getMovie = (args) => {
  });
 };
 
-  export const getUpcomingMovies = () => {
+  export const getFilteredMovies = (args) => {
+    console.log(args);
+    const type = args.queryKey[1];
+    console.log(type);
+    return fetch(
+      `https://api.themoviedb.org/3/movie/${type}?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&page=1`
+    ).then( (response) => {
+      if (!response.ok) {
+        throw new Error(response.json().message);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      throw error
+   });
+  };
+
+  export const filterMovies = () => {
     return fetch(
       `https://api.themoviedb.org/3/movie/upcoming?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&page=1`
     ).then(res => res.json())

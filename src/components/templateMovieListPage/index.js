@@ -4,6 +4,8 @@ import FilterCard from "../filterMoviesCard";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import MovieList from "../movieList";
+import { getFilteredMovies } from "../../api/tmdb-api";
+import { useQuery } from "react-query";
 
 const useStyles = makeStyles({
   root: {
@@ -14,21 +16,56 @@ const useStyles = makeStyles({
 function MovieListPageTemplate({ movies, title, action }) {
   const classes = useStyles();
   const [nameFilter, setNameFilter] = useState("");
-  const [genreFilter, setGenreFilter] = useState("0");
+  const [genreFilter, setGenreFilter] = useState("All");
+  const [categoryFilter, setCategoryFilter] = useState("0");
+  const [categoryMovies, setCategoryMovies] = useState([]);
+
   const genreId = Number(genreFilter);
 
+  const { error, isLoading, isError } = useQuery(["filter",categoryFilter], getFilteredMovies,{
+    onSuccess: (data) => {
+      setCategoryMovies(data.results);
+    },
+    enabled: categoryFilter !== "0"
+  });
 
-  let displayedMovies = movies
+  console.log(categoryFilter);
+
+  let displayedMovies =[];
+
+  returnedMovies();
+
+  function returnedMovies(){
+  if (categoryFilter === "0") {
+    console.log(categoryMovies);
+    displayedMovies = movies
     .filter((m) => {
       return m.title.toLowerCase().search(nameFilter.toLowerCase()) !== -1;
     })
     .filter((m) => {
       return genreId > 0 ? m.genre_ids.includes(genreId) : true;
     });
+  }
+  else{
+    displayedMovies = categoryMovies
+  }
+}
+
 
   const handleChange = (type, value) => {
-    if (type === "name") setNameFilter(value);
-    else setGenreFilter(value);
+    if (type === "name") {
+      setNameFilter(value);
+      setCategoryFilter("0");
+    }
+    else if (type === "genre"){
+      setCategoryFilter("0");
+      setGenreFilter(value);
+      returnedMovies();
+      console.log(categoryMovies);
+    } 
+    else{
+      setCategoryFilter(value);
+    }
   };
 
   return (
@@ -42,6 +79,7 @@ function MovieListPageTemplate({ movies, title, action }) {
             onUserInput={handleChange}
             titleFilter={nameFilter}
             genreFilter={genreFilter}
+            categoryFilter={categoryFilter}
           />
         </Grid>
         <MovieList action={action} movies={displayedMovies}></MovieList>

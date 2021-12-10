@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardMedia from "@material-ui/core/CardMedia";
@@ -33,6 +33,15 @@ export default function FilterMoviesCard(props) {
   const classes = useStyles();
   const { data, error, isLoading, isError } = useQuery("genres", getGenres);
 
+
+  const dropDownArray =[
+    {key: "latest",value: "Latest"},
+      {key: "now_playing", value: "Now Playing"},
+      {key: "popular", value: "Popular"},
+      {key: "top_rated", value: "Top Rated"},
+      {key: "upcoming", value: "Upcoming"},
+  ]
+
   if (isLoading) {
     return <Spinner />;
   }
@@ -42,7 +51,7 @@ export default function FilterMoviesCard(props) {
   }
   const genres = data.genres;
   genres.unshift({ id: "0", name: "All" });
-
+  
   const handleChange = (e, type, value) => {
     e.preventDefault();
     props.onUserInput(type, value); // NEW
@@ -54,6 +63,10 @@ export default function FilterMoviesCard(props) {
 
   const handleGenreChange = (e) => {
     handleChange(e, "genre", e.target.value);
+  };
+
+  const handleCategoryChange = (e) => {
+    handleChange(e, "category", e.target.value);
   };
 
   return (
@@ -84,6 +97,23 @@ export default function FilterMoviesCard(props) {
               return (
                 <MenuItem key={genre.id} value={genre.id}>
                   {genre.name}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
+        <FormControl className={classes.formControl}>
+          <InputLabel id="category-label">category</InputLabel>
+          <Select
+      labelId="category-label"
+      id="category-select"
+      value={dropDownArray}
+      onChange={handleCategoryChange}
+    >
+            {dropDownArray.map((d) => {
+              return (
+                <MenuItem key={d.value} value={d.key}>
+                  {d.value}
                 </MenuItem>
               );
             })}
