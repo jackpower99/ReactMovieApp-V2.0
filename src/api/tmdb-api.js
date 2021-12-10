@@ -11,6 +11,27 @@ export const getMovies = () => {
      throw error
   });
 };
+
+export const getCast = (cast, id) => {
+  console.log(cast);
+  //console.log(id);
+  const test = cast.queryKey[1];
+  console.log(test);
+  // const [, idPart] = args.queryKey;
+  // console.log(idPart);
+  // const { id } = idPart;
+  return fetch(
+    `https://api.themoviedb.org/3/movie/${test}/credits?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US`
+  ).then( (response) => {
+    if (!response.ok) {
+      throw new Error(response.json().message);
+    }
+    return response.json();
+  })
+  .catch((error) => {
+    throw error
+ });
+};
   
 export const getMovie = (args) => {
   console.log(args)
