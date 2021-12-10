@@ -13,6 +13,7 @@ import MoviesContextProvider from "./contexts/moviesContext";
 import AddMovieReviewPage from './pages/addMovieReviewPage';
 import SignInPage from "./pages/signInPage";
 import AuthContextProvider from "./contexts/authContext";
+import ActorPage from "./pages/actorDetailsPage";
 import { auth } from './firebase-config'
 import {
   createUserWithEmailAndPassword,
@@ -77,6 +78,7 @@ const App = () => {
          <Route path="/reviews/:id" component={MovieReviewPage} />
         <Route exact path="/movies/favorites" component={FavoriteMoviesPage} />
         <Route path="/movies/:id" component={MoviePage} />
+        <Route path="/actors/:id" component={ActorPage} />
         <Route exact path="/" component={HomePage} />
         <Route exact path="/logout" component={HomePage} />
         <Route exact path="/login" component={SignInPage} />

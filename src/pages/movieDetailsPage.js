@@ -12,6 +12,7 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
+import { Link } from "react-router-dom";
 
 const MovieDetailsPage = (props) => {
   const { id } = props.match.params
@@ -61,16 +62,22 @@ const MovieDetailsPage = (props) => {
             </ul> */}
             <List>
               {cast?.map(actor=> (
+                
                 <ListItem key={actor.id}>
+                   <Link to={`/actors/${actor.id}`}>
                   <ListItemAvatar>
                     <Avatar
                       alt={`Avatar ${actor.name}`}
                       src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
                       />
                     </ListItemAvatar>
+                    </Link>
+                   
                   <ListItemText primary={actor.name}/>
+                 
                   <ListItemText secondary={actor.character}/>
                 </ListItem>
+                
               ))}
             </List>
           </PageTemplate>

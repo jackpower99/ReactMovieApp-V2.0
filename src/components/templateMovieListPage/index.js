@@ -26,7 +26,8 @@ function MovieListPageTemplate({ movies, title, action }) {
     onSuccess: (data) => {
       setCategoryMovies(data.results);
     },
-    enabled: categoryFilter !== "0"
+    enabled: categoryFilter !== "0",
+    cacheTime: 5000
   });
 
   console.log(categoryFilter);
