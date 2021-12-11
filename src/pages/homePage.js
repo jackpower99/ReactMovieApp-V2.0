@@ -9,7 +9,15 @@ import Typography from "@material-ui/core/Typography";
 
 
 const HomePage = (props) => {
-  const {  data, error, isLoading, isError }  = useQuery('discover', getMovies);
+
+
+  const [page, setPage] = React.useState(1)
+
+  const {  data, error, isLoading, isError,  isFetching }  = useQuery(['discover',page], getMovies,
+  {
+    keepPreviousData: true
+  });
+
   const {currentUser} = useAuth()
 
   if (isLoading) {
@@ -21,16 +29,18 @@ const HomePage = (props) => {
   }  
   const movies = data.results;
 
-  // Redundant, but necessary to avoid app crashing.
+  console.log(data);
+  console.log(movies);
+
   const favorites = movies.filter(m => m.favorite)
   localStorage.setItem('favorites', JSON.stringify(favorites))
-  //const addToFavorites = (movieId) => true 
 
   return (
     <div>
      {currentUser && <Typography variant="h5">
             Welcome {JSON.stringify(currentUser.email,null,2).toString().slice(1,-1)}
     </Typography>}
+
     <PageTemplate
         title="Discover Movies"
         movies={movies}
@@ -38,6 +48,23 @@ const HomePage = (props) => {
           return <AddToFavoritesIcon movie={movie} />
         }}
       />
+      <span>Current Page: {page}</span>
+      <button
+         onClick={() => setPage(old => Math.max(old - 1, 0))}
+         disabled={page === 0}
+       >
+         Previous Page
+       </button>{' '}
+       <button
+         onClick={() => {
+            if ( data.total_pages>page) {
+             setPage(old => old + 1)
+           }
+         }}
+       >
+         Next Page
+       </button>
+       {isFetching ? <span> Loading...</span> : null}{' '}
       </div>
   );
 };

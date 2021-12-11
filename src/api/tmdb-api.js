@@ -1,6 +1,7 @@
-export const getMovies = () => {
+export const getMovies = (args) => {
+  const page = args.queryKey[1];
   return fetch(
-    `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&include_adult=false&include_video=false&page=1`
+    `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&include_adult=false&include_video=false&page=${page}`
   ).then((response) => {
     if (!response.ok) {
       throw new Error(response.json().message);
@@ -12,16 +13,10 @@ export const getMovies = () => {
   });
 };
 
-export const getCast = (cast, id) => {
-  console.log(cast);
-  //console.log(id);
-  const test = cast.queryKey[1];
-  console.log(test);
-  // const [, idPart] = args.queryKey;
-  // console.log(idPart);
-  // const { id } = idPart;
+export const getCast = (cast) => {
+  const id = cast.queryKey[1];
   return fetch(
-    `https://api.themoviedb.org/3/movie/${test}/credits?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US`
+    `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US`
   ).then( (response) => {
     if (!response.ok) {
       throw new Error(response.json().message);
@@ -34,7 +29,6 @@ export const getCast = (cast, id) => {
 };
   
 export const getMovie = (args) => {
-  console.log(args)
   const [, idPart] = args.queryKey;
   const { id } = idPart;
   return fetch(
@@ -51,7 +45,6 @@ export const getMovie = (args) => {
 };
 
 export const getActor = (args) => {
-  console.log(args)
   const [, idPart] = args.queryKey;
   const { id } = idPart;
   return fetch(
@@ -68,9 +61,7 @@ export const getActor = (args) => {
 };
 
   export const getFilteredMovies = (args) => {
-    console.log(args);
     const type = args.queryKey[1];
-    console.log(type);
     return fetch(
       `https://api.themoviedb.org/3/movie/${type}?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&page=1`
     ).then( (response) => {

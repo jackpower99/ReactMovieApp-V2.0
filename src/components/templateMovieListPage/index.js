@@ -30,15 +30,12 @@ function MovieListPageTemplate({ movies, title, action }) {
     cacheTime: 5000
   });
 
-  console.log(categoryFilter);
-
   let displayedMovies =[];
 
   returnedMovies();
 
   function returnedMovies(){
   if (categoryFilter === "0") {
-    console.log(categoryMovies);
     displayedMovies = movies
     .filter((m) => {
       return m.title.toLowerCase().search(nameFilter.toLowerCase()) !== -1;
@@ -62,7 +59,6 @@ function MovieListPageTemplate({ movies, title, action }) {
       setCategoryFilter("0");
       setGenreFilter(value);
       returnedMovies();
-      console.log(categoryMovies);
     } 
     else{
       setCategoryFilter(value);
