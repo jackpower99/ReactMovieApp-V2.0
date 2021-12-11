@@ -13,7 +13,7 @@ const useStyles = makeStyles({
   },
 });
 
-function MovieListPageTemplate({ movies, title, action }) {
+function MovieListPageTemplate({ movies, title, action, page }) {
   const classes = useStyles();
   const [nameFilter, setNameFilter] = useState("");
   const [genreFilter, setGenreFilter] = useState("All");
@@ -22,10 +22,11 @@ function MovieListPageTemplate({ movies, title, action }) {
 
   const genreId = Number(genreFilter);
 
-  const { error, isLoading, isError } = useQuery(["filter",categoryFilter], getFilteredMovies,{
+  const { error, isLoading, isError } = useQuery(["filter",categoryFilter, page], getFilteredMovies,{
     onSuccess: (data) => {
       setCategoryMovies(data.results);
     },
+    keepPreviousData: true,
     enabled: categoryFilter !== "0",
     cacheTime: 5000
   });
@@ -48,7 +49,6 @@ function MovieListPageTemplate({ movies, title, action }) {
     displayedMovies = categoryMovies
   }
 }
-
 
   const handleChange = (type, value) => {
     if (type === "name") {

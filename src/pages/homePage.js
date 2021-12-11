@@ -44,11 +44,12 @@ const HomePage = (props) => {
     <PageTemplate
         title="Discover Movies"
         movies={movies}
+        page={page}
         action={(movie) => {
           return <AddToFavoritesIcon movie={movie} />
         }}
       />
-      <span>Current Page: {page}</span>
+      <span>Current Page: {page} of {data.total_pages}</span>
       <button
          onClick={() => setPage(old => Math.max(old - 1, 0))}
          disabled={page === 0}
