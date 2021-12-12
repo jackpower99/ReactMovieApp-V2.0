@@ -13,7 +13,7 @@ const useStyles = makeStyles({
   },
 });
 
-const ActorDetails = ({ actor, action, knownFor }) => {  // Don't miss this!
+const ActorDetails = ({ actor, action, knownFor }) => { 
 
   const classes = useStyles()
   return (
