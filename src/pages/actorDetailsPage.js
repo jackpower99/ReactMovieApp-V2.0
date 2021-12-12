@@ -1,28 +1,57 @@
 import React, {useState} from "react";
 import { withRouter } from "react-router-dom";
-import MovieDetails from "../components/movieDetails";
-import PageTemplate from "../components/templateMoviePage";
-import { getMovie, getCast } from '../api/tmdb-api'
 import { useQuery } from "react-query";
 import Spinner from '../components/spinner';
-import CastList from "../components/castList";
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Avatar from '@mui/material/Avatar';
-import { Link } from "react-router-dom";
 import ActorDetails from "../components/actorDetails";
-import { getActor } from "../api/tmdb-api";
+import { getActor, getActorDetailsIMDB, getActorExternalId } from "../api/tmdb-api";
+import AddToFavoritesIcon from '../components/cardIcons/addToFavorites';
+import { makeStyles } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
+
+const useStyles = makeStyles({
+  root: {
+    padding: "50px",
+    margin: "20px"
+  },
+});
 
 const ActorDetailsPage = (props) => {
   const { id } = props.match.params
+  const [externalId, setExternalId] = useState("0")
+  const [externalKnownFor, setExternalKnownFor] = useState([])
+
+const classes= useStyles();
 
   const { data: actor, error, isLoading, isError } = useQuery(
     ["actor", { id: id }],
     getActor
   );
+
+  const {  err, isLoad, isErr } = useQuery(
+    ["actorExternalId", { id: id }],
+    getActorExternalId,{
+    onSuccess: (data)=>{
+      console.log("getActorExternalId",data);
+      setExternalId(data.imdb_id);
+      console.log("getActorExternalId",data.imdb_id);
+
+    },
+    enabled: !!actor,
+  });
+
+  const {  er, isL, isE } = useQuery(
+    ["externalDetails", { id: externalId }],
+    getActorDetailsIMDB,{
+    onSuccess: (data)=>{
+      console.log("getActorDetailsIMDB",data);
+      setExternalKnownFor(data.person_results[0].known_for);
+      console.log("getActorDetailsIMDB",externalKnownFor);
+    },
+    enabled: externalId!=="0",
+  });
+
+  console.log("actorDetails",externalKnownFor);
+
 
   if (isLoading) {
     return <Spinner />;
@@ -34,13 +63,21 @@ const ActorDetailsPage = (props) => {
 
   return (
     <>
+    <Grid container className={classes.root}>
+      {/* <Grid key="find" item xs={12} sm={6} md={4} lg={3} xl={2}> */}
       {actor ? (
         <>
-            <ActorDetails actor={actor} />
+            <ActorDetails actor={actor}
+            action={(movie) => {
+              return <AddToFavoritesIcon movie={movie} />
+            }}
+             knownFor={externalKnownFor} />
         </>
       ) : (
-        <p>Waiting for movie details</p>
+        <p>Waiting for actor details</p>
       )}
+  
+      </Grid>
     </>
   );
 };

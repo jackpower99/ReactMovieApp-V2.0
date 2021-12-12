@@ -2,10 +2,24 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
+import MovieList from "../movieList";
+import { makeStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
 
-const ActorDetails = ({ actor }) => {  // Don't miss this!
+
+const useStyles = makeStyles({
+  root: {
+    padding: "20px",
+  },
+});
+
+const ActorDetails = ({ actor, action, knownFor }) => {  // Don't miss this!
+
+  const classes = useStyles()
   return (
     <>
+  
+    <Grid container className={classes.root}>
     <Box
       sx={{
         display: 'flex',
@@ -46,6 +60,8 @@ const ActorDetails = ({ actor }) => {  // Don't miss this!
         {actor.birthday}
       </Typography>
       </Box>
+      <MovieList movies={knownFor} action ={action}></MovieList>
+      </Grid>
       </>
   );
 };
