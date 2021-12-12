@@ -47,13 +47,13 @@ const HomePage = (props) => {
         }}
       />
       <span>Current Page: {page} of {data.total_pages}</span>
-      <button
+      <button id="previous-button"
          onClick={() => setPage(old => Math.max(old - 1, 0))}
          disabled={page === 0}
        >
          Previous Page
        </button>{' '}
-       <button
+       <button id="next-button"
          onClick={() => {
             if ( data.total_pages>page) {
              setPage(old => old + 1)

@@ -51,5 +51,9 @@ describe("Movie Details Page", () => {
   });
   it("should display the correct images", () =>{
       cy.get(".MuiGridListTile-root").should('have.length',numberOfImages)
-  })
+  });
+  it("should navigate to the actors details page when image clicked", () => {
+    cy.get("img[alt='Avatar Tom Hardy']").click();
+    cy.url().should("include", `/actors/2524`);
+      });
 });

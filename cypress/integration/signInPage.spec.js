@@ -30,7 +30,7 @@ const registeredUser = {
 describe("Sign In Page", () => {
    
     beforeEach(() => {
-      cy.visit(`/login`);
+      cy.visit(`/`);
     });
     describe("Base tests", () => {
       it("should display sign in and register forms", () => {
@@ -74,7 +74,7 @@ describe("Sign In Page", () => {
     });
 
     describe("Signing In", () => {
-        it("should allow users to register with valid details", ()=> {
+        it("should allow users to sign in with valid details", ()=> {
             cy.get("#signInEmail").clear().type(registeredUser.email);
             cy.get("#signInPassword").clear().type(registeredUser.password);
             cy.get("#loginButton").click();

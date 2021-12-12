@@ -108,12 +108,12 @@ export default function FilterMoviesCard(props) {
           <Select
       labelId="category-label"
       id="category-select"
-      value={dropDownArray}
+      value={props.categoryFilter}
       onChange={handleCategoryChange}
     >
             {dropDownArray.map((d) => {
               return (
-                <MenuItem key={d.value} value={d.key}>
+                <MenuItem key={d.key} value={d.key}>
                   {d.value}
                 </MenuItem>
               );
