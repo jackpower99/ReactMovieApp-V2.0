@@ -17,7 +17,7 @@ const invalidUserPasswordTooShort = {
 }
 
 const invalidUserEmail = {
-    email: "testinggmail.com",
+    email: "testinggmailcom",
     password: "testing",
     confirmPassword: "testing"
 }

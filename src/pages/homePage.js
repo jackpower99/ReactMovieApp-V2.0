@@ -29,9 +29,6 @@ const HomePage = (props) => {
   }  
   const movies = data.results;
 
-  console.log(data);
-  console.log(movies);
-
   const favorites = movies.filter(m => m.favorite)
   localStorage.setItem('favorites', JSON.stringify(favorites))
 

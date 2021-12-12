@@ -33,11 +33,10 @@ const SiteHeader = ( { history }) => {
 
  
   var menuOptions = [
-    { label: "Home", path: "/" },
+    { label: "Home", path: "/home" },
     { label: "Favorites", path: "/movies/favorites" },
     { label: "Upcoming Movies", path: "/movies/upcoming" },
-    { label: "Logout", path: "/logedOut" },
-    { label: "Login", path: "/login"},
+    { label: "Logout", path: "/" },
   ];
 
   function editMenuOptions(){
@@ -52,13 +51,11 @@ const SiteHeader = ( { history }) => {
 
   const handleMenuSelect = (pageURL) => {
     console.log(pageURL);
-    if(pageURL !== "/logedOut"){
+    if(pageURL !== "/"){
       history.push(pageURL);
-      console.log(1);
     }
     else{
-    console.log(pageURL);
-    history.push("/login");
+    history.push("/");
     logout();
     }
   };

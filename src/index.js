@@ -14,17 +14,13 @@ import AddMovieReviewPage from './pages/addMovieReviewPage';
 import SignInPage from "./pages/signInPage";
 import AuthContextProvider from "./contexts/authContext";
 import ActorPage from "./pages/actorDetailsPage";
+import ErrorBoundary from "./components/errorBoundary"
 import { auth } from './firebase-config'
 import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  sendPasswordResetEmail,
+
   onAuthStateChanged,
-  signOut,
-  confirmPasswordReset,
 } from 'firebase/auth'
 
-import {useAuth} from "./contexts/authContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,23 +32,7 @@ const queryClient = new QueryClient({
   },
 });
 
-// const DefaultRoutes=()=>(
-//   <div>
-//     <SiteHeader />     {/* New Header  */}
-//           <Route exact path="/reviews/form" component={AddMovieReviewPage} />
-//           <Route exact path="/movies/upcoming" component={UpcomingMoviesPage} />
-//          <Route path="/reviews/:id" component={MovieReviewPage} />
-//         <Route exact path="/movies/favorites" component={FavoriteMoviesPage} />
-//         <Route path="/movies/:id" component={MoviePage} />
-//         <Route exact path="/" component={HomePage} />
-//         <Route exact path="/logout" component={HomePage} />
-//         <Redirect from="*" to="/" />
-//   </div>
-// )
-
 const App = () => {
-  // const {currentUser} = useAuth();
-  // console.log(currentUser);
 
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   onAuthStateChanged(auth, user => {
@@ -61,11 +41,8 @@ const App = () => {
 
   console.log(isLoggedIn);
 
-  // console.log(window.location.pathname)
-
-  // const currentPage = window.location.pathname;
-
   return (
+    <ErrorBoundary>
     <AuthContextProvider>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
@@ -79,9 +56,8 @@ const App = () => {
         <Route exact path="/movies/favorites" component={FavoriteMoviesPage} />
         <Route path="/movies/:id" component={MoviePage} />
         <Route path="/actors/:id" component={ActorPage} />
-        <Route exact path="/" component={HomePage} />
-        <Route exact path="/logout" component={HomePage} />
-        <Route exact path="/login" component={SignInPage} />
+        <Route exact path="/" component={SignInPage} />
+        <Route exact path="/home" component={HomePage} />
         <Redirect from="*" to="/" />
       </Switch>
       </MoviesContextProvider>
@@ -89,6 +65,7 @@ const App = () => {
   <ReactQueryDevtools initialIsOpen={false} />
   </QueryClientProvider>
   </AuthContextProvider>
+  </ErrorBoundary>
   );
 };
 

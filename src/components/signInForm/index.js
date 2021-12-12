@@ -50,16 +50,13 @@ const history = useHistory()
   };
 
 const registerUser = async () =>{
-    if(password.length>6 && password === confirmPassword && email.includes("@")){
+    if(password.length>6 && password === confirmPassword && email.length>6 && email.includes("@") && email.includes(".")){
         console.log("Registering");
         register(email,password)
         .then((res) => console.log(res))
         .catch((err) => console.log(err.message));
         setSuccess(true);
         history.go(0)
-        
-        //handleClick();
-
     }
     else {
         setFail(true);
@@ -68,20 +65,16 @@ const registerUser = async () =>{
 };
 
 const loginUser = async () =>{
-    if(loginPassword && loginEmail.length>0){
-        console.log("Signing In");
+
         login(loginEmail,loginPassword)
         .then(res => {
             console.log(res)
-            history.push("/")
+            history.push("/home")
     })
-        .catch((err) => console.log(err.message));
-    }
-    else {
-        setFail(true);
-        console.log("Unable to Register");
-    }
-  };
+        .catch(err => {
+          setFail(true);
+    });
+  }
 
   return (
     <ThemeProvider theme={theme}>
