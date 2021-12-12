@@ -93,9 +93,10 @@ export default function FilterMoviesCard(props) {
       value={props.genreFilter}
       onChange={handleGenreChange}
     >
-            {genres.map((genre) => {
+            {genres.map((genre, x) => {
+              x+=1
               return (
-                <MenuItem key={genre.id} value={genre.id}>
+                <MenuItem key={x} value={genre.id}>
                   {genre.name}
                 </MenuItem>
               );

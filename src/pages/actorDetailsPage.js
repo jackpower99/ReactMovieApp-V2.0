@@ -24,10 +24,12 @@ const classes= useStyles();
 
   const { data: actor, error, isLoading, isError } = useQuery(
     ["actor", { id: id }],
-    getActor
+    getActor,{
+      enabled: !!id,
+    }
   );
 
-  const {  err, isLoad, isErr } = useQuery(
+  useQuery(
     ["actorExternalId", { id: id }],
     getActorExternalId,{
     onSuccess: (data)=>{
@@ -39,7 +41,7 @@ const classes= useStyles();
     enabled: !!actor,
   });
 
-  const {  er, isL, isE } = useQuery(
+  useQuery(
     ["externalDetails", { id: externalId }],
     getActorDetailsIMDB,{
     onSuccess: (data)=>{
@@ -64,7 +66,6 @@ const classes= useStyles();
   return (
     <>
     <Grid container className={classes.root}>
-      {/* <Grid key="find" item xs={12} sm={6} md={4} lg={3} xl={2}> */}
       {actor ? (
         <>
             <ActorDetails actor={actor}

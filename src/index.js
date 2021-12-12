@@ -39,8 +39,6 @@ const App = () => {
     setIsLoggedIn(!!user);
   });
 
-  console.log(isLoggedIn);
-
   return (
     <ErrorBoundary>
     <AuthContextProvider>
@@ -51,7 +49,7 @@ const App = () => {
            {isLoggedIn && <SiteHeader />}
           <Switch>
           <Route exact path="/reviews/form" component={AddMovieReviewPage} />
-          <Route exact path="/movies/upcoming" component={UpcomingMoviesPage} />
+          {/* <Route exact path="/movies/upcoming" component={UpcomingMoviesPage} /> */}
          <Route path="/reviews/:id" component={MovieReviewPage} />
         <Route exact path="/movies/favorites" component={FavoriteMoviesPage} />
         <Route path="/movies/:id" component={MoviePage} />

@@ -35,14 +35,12 @@ const SiteHeader = ( { history }) => {
   var menuOptions = [
     { label: "Home", path: "/home" },
     { label: "Favorites", path: "/movies/favorites" },
-    { label: "Upcoming Movies", path: "/movies/upcoming" },
     { label: "Logout", path: "/" },
   ];
 
   function editMenuOptions(){
     if(currentUser){
     var menuOpt = menuOptions.filter(opt=> opt.label !== "Login")
-    console.log(menuOpt);
     return menuOpt;
     }
     var menuOptLoggedOut = menuOptions.filter(opt=> opt.label !== "Logout")
