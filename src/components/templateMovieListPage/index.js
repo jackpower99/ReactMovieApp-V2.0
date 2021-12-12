@@ -22,7 +22,7 @@ function MovieListPageTemplate({ movies, title, action, page }) {
 
   const genreId = Number(genreFilter);
 
-  const { error, isLoading, isError } = useQuery(["filter",categoryFilter, page], getFilteredMovies,{
+   useQuery(["filter",categoryFilter, page], getFilteredMovies,{
     onSuccess: (data) => {
       setCategoryMovies(data.results);
     },
