@@ -1,5 +1,9 @@
 let movies;    // List of movies from TMDB
 let categoryMovies;
+const registeredUser = {
+  email: "jppower2010@hotmail.com",
+  password: "testing"
+};
 
 
 // Utility functions
@@ -12,6 +16,7 @@ const filterByGenre = (movieList, genreId) =>
 
 describe("Home Page ", () => {
   before(() => {
+    cy.visit("/");
     // Get movies from TMDB and store in movies variable.
     cy.request(
       `https://api.themoviedb.org/3/discover/movie?api_key=${Cypress.env(
@@ -24,7 +29,11 @@ describe("Home Page ", () => {
       });
   });
   beforeEach(() => {
-    cy.visit("/home")
+    cy.visit(`/`);
+    cy.get("#signInEmail").clear().type(registeredUser.email);
+            cy.get("#signInPassword").clear().type(registeredUser.password);
+            cy.get("#loginButton").click();
+            cy.get("h5").should("have.text","Welcome "+registeredUser.email);;  
   });
 
   describe("Home Page", () => {
