@@ -96,6 +96,7 @@ export const getActorDetailsIMDB = (args) => {
   export const getFilteredMovies = (args) => {
     const type = args.queryKey[1];
     const page = args.queryKey[2];
+    
     return fetch(
       `https://api.themoviedb.org/3/movie/${type}?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&page=${page}`
     ).then( (response) => {

@@ -35,7 +35,7 @@ export default function FilterMoviesCard(props) {
 
 
   const dropDownArray =[
-    {key: "latest",value: "Latest"},
+    // {key: "latest",value: "Latest"},
       {key: "now_playing", value: "Now Playing"},
       {key: "popular", value: "Popular"},
       {key: "top_rated", value: "Top Rated"},
