@@ -12,6 +12,7 @@ import Menu from "@material-ui/core/Menu";
 import { withRouter } from "react-router-dom";
 import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useAuth } from "../../contexts/authContext";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -20,22 +21,41 @@ const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.toolbar,
 }));
 
+
 const SiteHeader = ( { history }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const {logout} = useAuth();
+  const {currentUser} = useAuth()
 
-  const menuOptions = [
-    { label: "Home", path: "/" },
+ 
+  var menuOptions = [
+    { label: "Home", path: "/home" },
     { label: "Favorites", path: "/movies/favorites" },
-    { label: "Upcoming Movies", path: "/movies/upcoming" },
-    { label: "Option 4", path: "/" },
+    { label: "Logout", path: "/" },
   ];
 
+  function editMenuOptions(){
+    if(currentUser){
+    var menuOpt = menuOptions.filter(opt=> opt.label !== "Login")
+    return menuOpt;
+    }
+    var menuOptLoggedOut = menuOptions.filter(opt=> opt.label !== "Logout")
+    return menuOptLoggedOut
+  }
+
   const handleMenuSelect = (pageURL) => {
-    history.push(pageURL);
+    console.log(pageURL);
+    if(pageURL !== "/"){
+      history.push(pageURL);
+    }
+    else{
+    history.push("/");
+    logout();
+    }
   };
 
   const handleMenu = (event) => {
@@ -78,7 +98,7 @@ const SiteHeader = ( { history }) => {
                   open={open}
                   onClose={() => setAnchorEl(null)}
                 >
-                  {menuOptions.map((opt) => (
+                  {editMenuOptions().map((opt) => (
                     <MenuItem
                       key={opt.label}
                       onClick={() => handleMenuSelect(opt.path)}
@@ -90,7 +110,7 @@ const SiteHeader = ( { history }) => {
               </>
             ) : (
               <>
-                {menuOptions.map((opt) => (
+                {editMenuOptions().map((opt) => (
                   <Button
                     key={opt.label}
                     color="inherit"

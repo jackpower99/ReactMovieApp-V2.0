@@ -1,9 +1,18 @@
 let movies;
 const movieId =  335983; // The movie Venom id
 let reviews;
+const registeredUser = {
+  email: "jppower2010@hotmail.com",
+  password: "testing"
+}
 
 describe("Navigation", () => {
   before(() => {
+    cy.visit(`/`);
+    cy.get("#signInEmail").clear().type(registeredUser.email);
+            cy.get("#signInPassword").clear().type(registeredUser.password);
+            cy.get("#loginButton").click();
+            cy.get("h5").should("have.text","Welcome "+registeredUser.email);
     cy.request(
       `https://api.themoviedb.org/3/discover/movie?api_key=${Cypress.env(
         "TMDB_KEY"
@@ -26,7 +35,11 @@ describe("Navigation", () => {
       });
   });
   beforeEach(() => {
-    cy.visit("/");
+    cy.visit(`/`);
+    cy.get("#signInEmail").clear().type(registeredUser.email);
+            cy.get("#signInPassword").clear().type(registeredUser.password);
+            cy.get("#loginButton").click();
+            cy.get("h5").should("have.text","Welcome "+registeredUser.email);;
   });  
   describe("From the home page", () => {
     it("should navigate to the movie details page and change browser URL", () => {
@@ -42,6 +55,9 @@ describe("Navigation", () => {
         cy.url().should("include", `/favorites`);
         cy.get("h3").contains("Favorite Movies");
       });
+      it("should allow user to logout and navigate back to login page", () => {
+        cy.get("header").find(".MuiToolbar-root").find("button").eq(2).click();
+        cy.url().should("include", `/`);
     });
     describe(
       "when the viewport is a mobile",
@@ -56,8 +72,14 @@ describe("Navigation", () => {
           cy.url().should("include", `/favorites`);
           cy.get("h3").contains("Favorite Movies");
         });
+        it("should allow user to logout from the dropdown menu", () => {
+          cy.get("header").find("button").click();
+          cy.get("li").eq(2).click();
+          cy.url().should("include", `/`);
+        }); 
     });
-});
+  });
+
 describe("From the Favorites page", () => {
     beforeEach(() => {
       cy.get("button[aria-label='add to favorites']").eq(0).click();
@@ -101,4 +123,5 @@ describe("From the Favorites page", () => {
       cy.get("h3").contains(movies[0].title);
     });
   });
+});
 });

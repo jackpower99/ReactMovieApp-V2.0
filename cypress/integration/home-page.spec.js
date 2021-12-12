@@ -1,4 +1,10 @@
 let movies;    // List of movies from TMDB
+let categoryMovies;
+const registeredUser = {
+  email: "jppower2010@hotmail.com",
+  password: "testing"
+};
+
 
 // Utility functions
 const filterByTitle = (movieList, string) =>
@@ -7,8 +13,10 @@ const filterByTitle = (movieList, string) =>
 const filterByGenre = (movieList, genreId) =>
   movieList.filter((m) => m.genre_ids.includes(genreId));
 
+
 describe("Home Page ", () => {
   before(() => {
+    cy.visit("/");
     // Get movies from TMDB and store in movies variable.
     cy.request(
       `https://api.themoviedb.org/3/discover/movie?api_key=${Cypress.env(
@@ -18,15 +26,19 @@ describe("Home Page ", () => {
       .its("body")    // Take the body of HTTP response from TMDB
       .then((response) => {
         movies = response.results
-      })
-  })
+      });
+  });
   beforeEach(() => {
-    cy.visit("/")
+    cy.visit(`/`);
+    cy.get("#signInEmail").clear().type(registeredUser.email);
+            cy.get("#signInPassword").clear().type(registeredUser.password);
+            cy.get("#loginButton").click();
+            cy.get("h5").should("have.text","Welcome "+registeredUser.email);;  
   });
 
   describe("Home Page", () => {
     beforeEach(() => {
-      cy.visit("/");
+      cy.visit("/home");
     });
   
     describe("Base test", () => {
@@ -65,7 +77,7 @@ describe("Home Page ", () => {
      })
      it("should display no movies if a match for the search string cannot be found. e.g 'xyz' ", () => {
          let searchString = "xyz";
-         let matchingMovies = filterByTitle(movies, searchString);
+         cy.get("#filled-search").clear().type(searchString)
          cy.get(".MuiCardHeader-content").should(
             "have.length",
             0
@@ -88,6 +100,24 @@ describe("Home Page ", () => {
        });
      });
    });
+   
+   describe("By movie category", () => {
+     
+    it("should display movies with the specified category only", () => {
+      cy.request(
+        `https://api.themoviedb.org/3/movie/top_rated?api_key=${Cypress.env("TMDB_KEY")}&language=en-US&page=1`
+      )
+        .its("body")    // Take the body of HTTP response from TMDB
+        .then((res) => {
+          categoryMovies = res.results
+        });
+       const selectedCategoryText = "Top Rated";
+       cy.get('#category-select').click();
+       cy.get("li").contains(selectedCategoryText).click();
+       cy.get(".MuiCardHeader-content").first().contains("Dilwale Dulhania Le Jayenge")
+       });
+     });
+   });
 
    describe("Selecting a favorite movie", () => {
        it("Display favorited avatar at top of card and add to favorites page.", () => {
@@ -104,6 +134,19 @@ describe("Home Page ", () => {
 
        }); 
    });
+   describe("The next page & previous page", () => {
+    it("should change the page of movies displayed when button pressed", () => {
+
+      const firstPageFirstMovie =  cy.get(".MuiCardHeader-content").first();
+      cy.get("#next-button").click();
+      cy.get(".MuiCardHeader-content").first().should("not.contain", firstPageFirstMovie);
+
+      const secondPageFirstMovie =  cy.get(".MuiCardHeader-content").first();
+      cy.get("#previous-button").click();
+      cy.get(".MuiCardHeader-content").first().should("not.contain", secondPageFirstMovie);
+
+    });
+  });
  });
-});
+
 //MuiCardHeader-avatar 
