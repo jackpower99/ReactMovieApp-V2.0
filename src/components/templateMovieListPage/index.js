@@ -18,18 +18,18 @@ function MovieListPageTemplate({ movies, title, action, page }) {
   const [nameFilter, setNameFilter] = useState("");
   const [genreFilter, setGenreFilter] = useState("All");
   const [categoryFilter, setCategoryFilter] = useState("0");
-  const [categoryMovies, setCategoryMovies] = useState([]);
+  //const [categoryMovies, setCategoryMovies] = useState([]);
 
   const genreId = Number(genreFilter);
 
-   useQuery(["filter",categoryFilter, page], getFilteredMovies,{
-    onSuccess: (data) => {
-      setCategoryMovies(data.results);
-    },
-    keepPreviousData: true,
-    enabled: categoryFilter !== "0",
-    cacheTime: 5000
-  });
+  //  useQuery(["filter",categoryFilter, page], getFilteredMovies,{
+  //   onSuccess: (data) => {
+  //     setCategoryMovies(data.results);
+  //   },
+  //   keepPreviousData: true,
+  //   enabled: categoryFilter !== "0",
+  //   cacheTime: 5000
+  // });
 
   let displayedMovies =[];
 
@@ -46,7 +46,11 @@ function MovieListPageTemplate({ movies, title, action, page }) {
     });
   }
   else{
-    displayedMovies = categoryMovies
+    displayedMovies = movies.filter((m)=> {
+    return m.category === categoryFilter;
+    });
+    console.log(2,displayedMovies)
+
   }
 }
 
@@ -62,6 +66,7 @@ function MovieListPageTemplate({ movies, title, action, page }) {
     } 
     else{
       setCategoryFilter(value);
+      console.log(1,value);
     }
   };
 

@@ -56,5 +56,6 @@
     "cypress": "^8.7.0",
     "http-server": "^13.0.2",
     "start-server-and-test": "^1.14.0"
-  }
+  },
+  "proxy":"http://localhost:8080"
 }
