@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { useQuery } from "react-query";
 import Spinner from '../components/spinner';
 import ActorDetails from "../components/actorDetails";
-import { getActor, getActorDetailsIMDB, getActorExternalId } from "../api/tmdb-api";
+import { getActor, getActorDetailsIMDB, getActorExternalId, getActorKnownFor, getActorKnownForMovies } from "../api/tmdb-api";
 import AddToFavoritesIcon from '../components/cardIcons/addToFavorites';
 import { makeStyles } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
@@ -19,6 +19,10 @@ const ActorDetailsPage = (props) => {
   const { id } = props.match.params
   const [externalId, setExternalId] = useState("0")
   const [externalKnownFor, setExternalKnownFor] = useState([])
+  const [knownForMovieIds, setKnownForMovieIds] = useState([])
+  const [knownForMovies, setKnownForMovies] = useState([])
+  const [idsLoaded, setIdsLoaded] = useState(false)
+  
 
 const classes= useStyles();
 
@@ -52,8 +56,37 @@ const classes= useStyles();
     enabled: externalId!=="0",
   });
 
-  console.log("actorDetails",externalKnownFor);
+  useQuery(
+    ["actorsKnownFor", { id: id }],
+    getActorKnownFor,{
+    onSuccess: (data)=>{
+      console.log(data.known_for)
+      IdStateExtraction(data.known_for);
+    },
+    enabled: !!actor,
+  });
 
+  useQuery(
+    ["actorMovies", knownForMovieIds],
+    getActorKnownForMovies,{
+    onSuccess: (data)=>{
+      setKnownForMovies(...knownForMovies, data);
+    },
+    enabled: idsLoaded,
+    cacheTime: 1000
+  });
+
+  function IdStateExtraction(arr){
+    var newState =[];
+    console.log(1);
+    arr.forEach( m => newState.push(m.movie_id))
+  
+    setKnownForMovieIds(newState);
+    setIdsLoaded(true);
+    console.log(newState);
+  }
+
+  console.log(knownForMovieIds);
 
   if (isLoading) {
     return <Spinner />;
@@ -72,7 +105,9 @@ const classes= useStyles();
             action={(movie) => {
               return <AddToFavoritesIcon movie={movie} />
             }}
-             knownFor={externalKnownFor} />
+             knownFor={externalKnownFor}
+               //externalKnownFor
+                />
         </>
       ) : (
         <p>Waiting for actor details</p>

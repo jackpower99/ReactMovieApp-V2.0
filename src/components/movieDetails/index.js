@@ -34,13 +34,7 @@ const useStyles = makeStyles((theme) => ({
 
 const MovieDetails = ({ movie }) => {  // Don't miss this!
 
-  //const {genres} = useQuery("genres", getGenres);
-
   const[genres,setGenres] = useState([]);
-
-  // const { data, error, isLoading, isError } = useQuery("genres", getGenres);
-
-  // const genres = data;
 
   const {  err, isLoad, isErr } = useQuery("genresForDetails",getGenres,{
     onSuccess: (data)=>{
@@ -49,21 +43,12 @@ const MovieDetails = ({ movie }) => {  // Don't miss this!
     keepPreviousData: true
   });
 
-  // const { data: genres } = useQuery(
-  //   "genresDetailsPage",
-  //   getGenres
-  // );
-
-
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  console.log(111,genres);
 
   const movieGenreIds = movie.genre_ids;
 
   const genreNames = genres.filter(g => movieGenreIds.includes(g.id));
-
-  console.log(211,genreNames);
 
   return (
     <>
