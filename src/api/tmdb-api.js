@@ -1,24 +1,11 @@
-// export const getMovies = (args) => {
-//   const page = args.queryKey[1];
-//   return fetch(
-//     `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&include_adult=false&include_video=false&page=${page}`
-//   ).then((response) => {
-//     if (!response.ok) {
-//       throw new Error(response.json().message);
-//     }
-//     return response.json();
-//   })
-//   .catch((error) => {
-//      throw error
-//   });
-// };
-
-import { GetApp } from "@material-ui/icons";
-
-export const getMovies = (args) => {
+export const getMovies = async (args) => {
   const pageNum = args.queryKey[1];
+  const token = args.queryKey[2];
   return fetch(
     `/api/movies/?page=${pageNum}`,{
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
     }
   ).then((response) => {
     if (!response.ok) {
@@ -29,6 +16,7 @@ export const getMovies = (args) => {
   .catch((error) => {
      throw error
   });
+// });
 };
 
 export const getCast = (cast) => {
@@ -48,9 +36,13 @@ export const getCast = (cast) => {
   
 export const getMovie = (args) => {
   const [, idPart] = args.queryKey;
+  const token = args.queryKey[2];
   const { id } = idPart;
   return fetch(
     `/api/movies/${id}`,{
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
     }
   ).then((response) => {
     if (!response.ok) {
@@ -66,9 +58,13 @@ export const getMovie = (args) => {
 export const getActor = (args) => {
   const [, idPart] = args.queryKey;
   const { id } = idPart;
+  const token = args.queryKey[2];
   return fetch(
-    `/api/actors/${id}`
-    //`https://api.themoviedb.org/3/person/${id}?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US`
+    `/api/actors/${id}`,{
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    }
   ).then((response) => {
     if (!response.ok) {
       throw new Error(response.json().message);
@@ -83,9 +79,15 @@ export const getActor = (args) => {
 export const getActorKnownFor = (args) => {
   const [, idPart] = args.queryKey;
   const { id } = idPart;
-  console.log(id);
+  console.log(args.queryKey[2])
+  const token = args.queryKey[2];
+  console.log(token)
   return fetch(
-    `/api/actors/${id}/known_for`
+    `/api/actors/${id}/known_for`,{
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    }
     //`https://api.themoviedb.org/3/person/${id}?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US`
   ).then((response) => {
     if (!response.ok) {
@@ -101,11 +103,16 @@ export const getActorKnownFor = (args) => {
 
 export const getActorKnownForMovies = (args) => {
   const argsPassed = args.queryKey[1];
-  console.log(argsPassed);
+  const token = args.queryKey[2];
+  console.log(args);
 
   console.log(`/api/movies/known_for/${argsPassed}`)
   return fetch(
-    `/api/movies/known_for/${argsPassed}`
+    `/api/movies/known_for/${argsPassed}`,{
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    }
     //`https://api.themoviedb.org/3/person/${id}?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US`
   ).then((response) => {
     if (!response.ok) {
@@ -176,9 +183,13 @@ export const getActorDetailsIMDB = (args) => {
     .then(json => json.results);
   };
   
-  export const getGenres = async () => {
+  export const getGenres = async (args) => {
+    const token = args.queryKey[1];
     return fetch(
         `/api/genres`,{
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
         }
     ).then( (response) => {
       if (!response.ok) {
@@ -192,10 +203,14 @@ export const getActorDetailsIMDB = (args) => {
   };
   
   export const getMovieImages = ({ queryKey }) => {
+    console.log(queryKey);
     const [, idPart] = queryKey;
     const { id } = idPart;
-    console.log(1,id);
+    const token = queryKey[2];
     return fetch( `/api/movies/${id}/images`,{
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
     }
       // `https://api.themoviedb.org/3/movie/${id}/images?api_key=${process.env.REACT_APP_TMDB_KEY}`
     ).then( (response) => {

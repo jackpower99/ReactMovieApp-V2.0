@@ -8,6 +8,9 @@ import AddToFavoritesIcon from '../components/cardIcons/addToFavorites';
 import { makeStyles } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+const auth = getAuth();
+
 const useStyles = makeStyles({
   root: {
     padding: "50px",
@@ -17,47 +20,38 @@ const useStyles = makeStyles({
 
 const ActorDetailsPage = (props) => {
   const { id } = props.match.params
-  const [externalId, setExternalId] = useState("0")
-  const [externalKnownFor, setExternalKnownFor] = useState([])
   const [knownForMovieIds, setKnownForMovieIds] = useState([])
   const [knownForMovies, setKnownForMovies] = useState([])
   const [idsLoaded, setIdsLoaded] = useState(false)
+  const [token, setToken] = React.useState("")
+
+  function getToken(){
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        user.getIdToken().then(tok => {
+        setToken(tok)
+      });
+     }
+      else {
+       return null;
+      }
+    });
+  }
+
+getToken();
   
 
 const classes= useStyles();
 
   const { data: actor, error, isLoading, isError } = useQuery(
-    ["actor", { id: id }],
+    ["actor", { id: id }, token],
     getActor,{
       enabled: !!id,
     }
   );
 
   useQuery(
-    ["actorExternalId", { id: id }],
-    getActorExternalId,{
-    onSuccess: (data)=>{
-      console.log("getActorExternalId",data);
-      setExternalId(data.imdb_id);
-      console.log("getActorExternalId",data.imdb_id);
-
-    },
-    enabled: !!actor,
-  });
-
-  useQuery(
-    ["externalDetails", { id: externalId }],
-    getActorDetailsIMDB,{
-    onSuccess: (data)=>{
-      console.log("getActorDetailsIMDB",data);
-      setExternalKnownFor(data.person_results[0].known_for);
-      console.log("getActorDetailsIMDB",externalKnownFor);
-    },
-    enabled: externalId!=="0",
-  });
-
-  useQuery(
-    ["actorsKnownFor", { id: id }],
+    ["actorsKnownFor", { id: id }, token],
     getActorKnownFor,{
     onSuccess: (data)=>{
       console.log(data.known_for)
@@ -67,26 +61,22 @@ const classes= useStyles();
   });
 
   useQuery(
-    ["actorMovies", knownForMovieIds],
+    ["actorMovies", knownForMovieIds, token],
     getActorKnownForMovies,{
     onSuccess: (data)=>{
-      setKnownForMovies(...knownForMovies, data);
+      setKnownForMovies(data);
     },
-    enabled: idsLoaded,
-    cacheTime: 1000
+    enabled: !!idsLoaded,
   });
 
   function IdStateExtraction(arr){
     var newState =[];
-    console.log(1);
     arr.forEach( m => newState.push(m.movie_id))
   
     setKnownForMovieIds(newState);
     setIdsLoaded(true);
     console.log(newState);
   }
-
-  console.log(knownForMovieIds);
 
   if (isLoading) {
     return <Spinner />;
@@ -105,7 +95,7 @@ const classes= useStyles();
             action={(movie) => {
               return <AddToFavoritesIcon movie={movie} />
             }}
-             knownFor={externalKnownFor}
+             knownFor={knownForMovies}
                //externalKnownFor
                 />
         </>

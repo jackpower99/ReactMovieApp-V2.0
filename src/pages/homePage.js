@@ -6,19 +6,35 @@ import {getMovies} from '../api/tmdb-api'
 import AddToFavoritesIcon from '../components/cardIcons/addToFavorites';
 import {useAuth} from "../contexts/authContext";
 import Typography from "@material-ui/core/Typography";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+const auth = getAuth();
 
 
 const HomePage = (props) => {
 
-
   const [page, setPage] = React.useState(1)
-
-  const {  data, error, isLoading, isError,  isFetching }  = useQuery(['discover',page], getMovies,
-  {
-    keepPreviousData: true
-  });
-
+  const [token, setToken] = React.useState("")
   const {currentUser} = useAuth()
+
+  function getToken(){
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        user.getIdToken().then(tok => {
+        setToken(tok)
+      });
+     }
+      else {
+       return null;
+      }
+    });
+  }
+
+  getToken();
+
+  const {  data, error, isLoading, isError,  isFetching }  = useQuery(['discover',page, token], getMovies,
+  {
+    keepPreviousData: true,
+  });
 
   if (isLoading) {
     return <Spinner />
@@ -28,6 +44,7 @@ const HomePage = (props) => {
     return <h1>{error.message}</h1>
   }  
   const movies = data.results;
+
 
   const favorites = movies.filter(m => m.favorite)
   localStorage.setItem('favorites', JSON.stringify(favorites))

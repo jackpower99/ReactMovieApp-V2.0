@@ -7,6 +7,8 @@ import GridListTile from "@material-ui/core/GridListTile";
 import { getMovieImages } from "../../api/tmdb-api";
 import { useQuery } from "react-query";
 import Spinner from '../spinner';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+const auth = getAuth();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,9 +23,27 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const TemplateMoviePage = ({ movie, children }) => {
+
+  const [token, setToken] = React.useState("")
+
+  function getToken(){
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        user.getIdToken().then(tok => {
+        setToken(tok)
+      });
+     }
+      else {
+       return null;
+      }
+    });
+  }
+
+  getToken();
+
   const classes = useStyles();
   const { data , error, isLoading, isError } = useQuery(
-    ["images", { id: movie.id }],
+    ["images", { id: movie.id }, token],
     getMovieImages
   );
 
