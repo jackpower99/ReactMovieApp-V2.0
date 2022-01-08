@@ -12,6 +12,8 @@ import Drawer from "@material-ui/core/Drawer";
 import MovieReviews from "../movieReviews";
 import { getGenres } from "../../api/tmdb-api";
 import { useQuery } from "react-query";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+const auth = getAuth();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,12 +37,28 @@ const useStyles = makeStyles((theme) => ({
 const MovieDetails = ({ movie }) => {  // Don't miss this!
 
   const[genres,setGenres] = useState([]);
+  // const [token, setToken] = React.useState("")
+
+  // function getToken(){
+  //   onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       user.getIdToken().then(tok => {
+  //       setToken(tok)
+  //       console.log(tok)
+  //     });
+  //    }
+  //     else {
+  //      return null;
+  //     }
+  //   });
+  // }
+
+  // getToken();
 
   const {  err, isLoad, isErr } = useQuery("genresForDetails",getGenres,{
     onSuccess: (data)=>{
       setGenres(data);
-    },
-    keepPreviousData: true
+    }
   });
 
   const classes = useStyles();
