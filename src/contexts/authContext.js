@@ -40,6 +40,10 @@ export default function AuthContextProvider({ children }) {
     return signInWithEmailAndPassword(auth, email, password)
   }
 
+  // function getIdToken(){
+  //   return auth.currentUser.getIdToken()
+  // }
+
   function register(email, password) {
     return createUserWithEmailAndPassword(auth, email, password)
   }
@@ -66,6 +70,7 @@ export default function AuthContextProvider({ children }) {
     logout,
     forgotPassword,
     resetPassword,
+    //getIdToken
   }
 
 

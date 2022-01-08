@@ -11,41 +11,39 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
 import { Link } from "react-router-dom";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+const auth = getAuth();
 
 const MovieDetailsPage = (props) => {
   const { id } = props.match.params
+  const [token, setToken] = React.useState("")
 
-  const[cast,setCast] = useState([]);
+  function getToken(){
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        user.getIdToken().then(tok => {
+        setToken(tok)
+      });
+     }
+      else {
+       return null;
+      }
+    });
+  }
+
+  getToken();
 
   const { data: movie, error, isLoading, isError } = useQuery(
-    ["movie", { id: id }],
+    ["movie", { id: id }, token],
     getMovie
   );
-
-  const movieId = movie?.id
-
-  const {  err, isLoad, isErr } = useQuery(["cast", movieId ],getCast,{
-    onSuccess: (data)=>{
-      setCast(data.cast);
-    },
-    enabled: !!movieId,
-  });
-
-
-  console.log(cast);
-  console.log(movieId);
 
   if (isLoading) {
     return <Spinner />;
   }
 
-  if (isLoad) {
-    return <Spinner />;
-  }
-  //button to view cast 
-
-  if (isError||isErr) {
-    return <h1>{error.message||err.message}</h1>;
+  if (isError) {
+    return <h1>{error.message}</h1>;
   }
 
   return (
@@ -54,12 +52,8 @@ const MovieDetailsPage = (props) => {
         <>
           <PageTemplate movie={movie}>
             <MovieDetails movie={movie} />
-            {/* <CastList cast ={cast}/> */}
-            {/* <ul>{cast?.map(actor => 
-            <li key={actor.id}>{actor.name}</li>)}
-            </ul> */}
             <List>
-              {cast?.map(actor=> (
+              {movie.cast.map(actor=> (
                 
                 <ListItem key={actor.id}>
                    <Link to={`/actors/${actor.id}`}>

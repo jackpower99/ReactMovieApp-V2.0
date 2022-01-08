@@ -3,10 +3,13 @@ import { withRouter } from "react-router-dom";
 import { useQuery } from "react-query";
 import Spinner from '../components/spinner';
 import ActorDetails from "../components/actorDetails";
-import { getActor, getActorDetailsIMDB, getActorExternalId } from "../api/tmdb-api";
+import { getActor, getActorDetailsIMDB, getActorExternalId, getActorKnownFor, getActorKnownForMovies } from "../api/tmdb-api";
 import AddToFavoritesIcon from '../components/cardIcons/addToFavorites';
 import { makeStyles } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
+
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+const auth = getAuth();
 
 const useStyles = makeStyles({
   root: {
@@ -17,43 +20,63 @@ const useStyles = makeStyles({
 
 const ActorDetailsPage = (props) => {
   const { id } = props.match.params
-  const [externalId, setExternalId] = useState("0")
-  const [externalKnownFor, setExternalKnownFor] = useState([])
+  const [knownForMovieIds, setKnownForMovieIds] = useState([])
+  const [knownForMovies, setKnownForMovies] = useState([])
+  const [idsLoaded, setIdsLoaded] = useState(false)
+  const [token, setToken] = React.useState("")
+
+  function getToken(){
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        user.getIdToken().then(tok => {
+        setToken(tok)
+      });
+     }
+      else {
+       return null;
+      }
+    });
+  }
+
+getToken();
+  
 
 const classes= useStyles();
 
   const { data: actor, error, isLoading, isError } = useQuery(
-    ["actor", { id: id }],
+    ["actor", { id: id }, token],
     getActor,{
       enabled: !!id,
     }
   );
 
   useQuery(
-    ["actorExternalId", { id: id }],
-    getActorExternalId,{
+    ["actorsKnownFor", { id: id }, token],
+    getActorKnownFor,{
     onSuccess: (data)=>{
-      console.log("getActorExternalId",data);
-      setExternalId(data.imdb_id);
-      console.log("getActorExternalId",data.imdb_id);
-
+      console.log(data.known_for)
+      IdStateExtraction(data.known_for);
     },
     enabled: !!actor,
   });
 
   useQuery(
-    ["externalDetails", { id: externalId }],
-    getActorDetailsIMDB,{
+    ["actorMovies", knownForMovieIds, token],
+    getActorKnownForMovies,{
     onSuccess: (data)=>{
-      console.log("getActorDetailsIMDB",data);
-      setExternalKnownFor(data.person_results[0].known_for);
-      console.log("getActorDetailsIMDB",externalKnownFor);
+      setKnownForMovies(data);
     },
-    enabled: externalId!=="0",
+    enabled: !!idsLoaded,
   });
 
-  console.log("actorDetails",externalKnownFor);
-
+  function IdStateExtraction(arr){
+    var newState =[];
+    arr.forEach( m => newState.push(m.movie_id))
+  
+    setKnownForMovieIds(newState);
+    setIdsLoaded(true);
+    console.log(newState);
+  }
 
   if (isLoading) {
     return <Spinner />;
@@ -72,7 +95,9 @@ const classes= useStyles();
             action={(movie) => {
               return <AddToFavoritesIcon movie={movie} />
             }}
-             knownFor={externalKnownFor} />
+             knownFor={knownForMovies}
+               //externalKnownFor
+                />
         </>
       ) : (
         <p>Waiting for actor details</p>

@@ -9,7 +9,11 @@ import Fab from "@material-ui/core/Fab";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
-import MovieReviews from "../movieReviews"
+import MovieReviews from "../movieReviews";
+import { getGenres } from "../../api/tmdb-api";
+import { useQuery } from "react-query";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+const auth = getAuth();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,8 +35,38 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const MovieDetails = ({ movie }) => {  // Don't miss this!
+
+  const[genres,setGenres] = useState([]);
+  // const [token, setToken] = React.useState("")
+
+  // function getToken(){
+  //   onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       user.getIdToken().then(tok => {
+  //       setToken(tok)
+  //       console.log(tok)
+  //     });
+  //    }
+  //     else {
+  //      return null;
+  //     }
+  //   });
+  // }
+
+  // getToken();
+
+  const {  err, isLoad, isErr } = useQuery("genresForDetails",getGenres,{
+    onSuccess: (data)=>{
+      setGenres(data);
+    }
+  });
+
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const movieGenreIds = movie.genre_ids;
+
+  const genreNames = genres.filter(g => movieGenreIds.includes(g.id));
 
   return (
     <>
@@ -48,31 +82,18 @@ const MovieDetails = ({ movie }) => {  // Don't miss this!
         <li>
           <Chip label="Genres" className={classes.chip} color="primary" />
         </li>
-        {movie.genres.map((g) => (
+        {genreNames.map((g) => (
           <li key={g.name}>
             <Chip label={g.name} className={classes.chip} />
           </li>
         ))}
       </Paper>
       <Paper component="ul" className={classes.root}>
-        <Chip icon={<AccessTimeIcon />} label={`${movie.runtime} min.`} />
-        <Chip
-          icon={<MonetizationIcon />}
-          label={`${movie.revenue.toLocaleString()}`}
-        />
         <Chip
           icon={<StarRate />}
           label={`${movie.vote_average} (${movie.vote_count}`}
         />
         <Chip label={`Released: ${movie.release_date}`} />
-      </Paper>
-      <Paper component="ul" className={classes.root}>
-       
-        {movie.production_countries.map((g) => (
-          <li key={g.name}>
-            <Chip label={g.name} className={classes.chip} />
-          </li>
-        ))}
       </Paper>
 
       <Fab

@@ -49,7 +49,8 @@ export default function FilterMoviesCard(props) {
   if (isError) {
     return <h1>{error.message}</h1>;
   }
-  const genres = data.genres;
+  const genres = data;
+
   genres.unshift({ id: "0", name: "All" });
   
   const handleChange = (e, type, value) => {
@@ -66,6 +67,7 @@ export default function FilterMoviesCard(props) {
   };
 
   const handleCategoryChange = (e) => {
+    console.log(e.target)
     handleChange(e, "category", e.target.value);
   };
 
@@ -113,7 +115,7 @@ export default function FilterMoviesCard(props) {
     >
             {dropDownArray.map((d) => {
               return (
-                <MenuItem key={d.key} value={d.key}>
+                <MenuItem key={d.key} value={d.value}>
                   {d.value}
                 </MenuItem>
               );
